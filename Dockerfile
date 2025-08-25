@@ -41,12 +41,12 @@ WORKDIR /opt
 COPY --from=builder /opt/wyoming-piper /opt/wyoming-piper
 WORKDIR /opt/wyoming-piper
 
-# Install requirements including piper-phonemize
-RUN venv/bin/pip install -r requirements.txt
-# Create Python venv and install Wyoming-Piper
+# Create Python venv
 RUN python3 -m venv venv \
- && venv/bin/pip install --upgrade pip \
- && venv/bin/pip install .
+ && venv/bin/pip install --upgrade pip
+
+# Install all Wyoming-Piper requirements
+RUN venv/bin/pip install -r requirements.txt
 
 # Copy Piper binary + shared libraries
 COPY --from=builder /opt/piper/build/piper /usr/local/bin/piper
