@@ -1,32 +1,49 @@
-FROM ubuntu:22.04
+FROM ubuntu:22.04 AS builder
 
-# Install essentials
+# Install build deps
 RUN apt-get update && apt-get install -y \
-    curl \
-    libvulkan1 \
-    ocl-icd-libopencl1 \
-    mesa-vulkan-drivers \
+    git build-essential cmake python3 python3-venv python3-dev curl \
+    libvulkan1 ocl-icd-libopencl1 mesa-vulkan-drivers \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy or clone the wyoming-piper code
+WORKDIR /opt
+
+# Clone ROCm-enabled piper (this repo itself)
+RUN git clone https://github.com/Chreece/wyoming-piper-rocm.git
+WORKDIR /opt/wyoming-piper-rocm
+
+# Build piper binary
+RUN mkdir build && cd build && cmake .. && make -j$(nproc)
+
+# ---- Final image ----
+FROM ubuntu:22.04
+
+# Install runtime deps
+RUN apt-get update && apt-get install -y \
+    python3 python3-venv python3-dev curl \
+    libvulkan1 ocl-icd-libopencl1 mesa-vulkan-drivers \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt
+
+# Clone Wyoming Piper server
+RUN git clone https://github.com/rhasspy/wyoming-piper.git
 WORKDIR /opt/wyoming-piper
-COPY . /opt/wyoming-piper
 
-# Install Python dependencies
-RUN apt-get update && apt-get install -y python3 python3-venv python3-dev && rm -rf /var/lib/apt/lists/*
-RUN python3 -m venv venv
-RUN venv/bin/pip install --upgrade pip
-RUN venv/bin/pip install .
+# Setup Python venv + install deps
+RUN python3 -m venv venv \
+ && venv/bin/pip install --upgrade pip \
+ && venv/bin/pip install -r requirements.txt
 
-# Download Piper binary (adapt URL for GPU-enabled build if available)
-RUN curl -L -s "https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_amd64.tar.gz" \
-    | tar -zxvf - -C /usr/share
-
-# Export ROS/Vulkan variables if needed
-ENV VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.x86_64.json
+# Copy ROCm-enabled piper binary from builder
+COPY --from=builder /opt/wyoming-piper-rocm/build/piper /usr/local/bin/piper
 
 # Expose port
 EXPOSE 10200
 
-# Set entrypoint
-ENTRYPOINT ["venv/bin/python3", "-m", "wyoming_piper", "--voice", "en_US-lessac-medium", "--uri", "tcp://0.0.0.0:10200", "--data-dir", "/data", "--download-dir", "/data"]
+# Default entrypoint
+ENTRYPOINT ["venv/bin/python3", "-m", "wyoming_piper", \
+    "--uri", "tcp://0.0.0.0:10200", \
+    "--voice", "en_US-lessac-medium", \
+    "--data-dir", "/data", \
+    "--download-dir", "/data"]
