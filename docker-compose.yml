@@ -1,0 +1,13 @@
+services:
+  wyoming-piper:
+    build:
+      context: .
+    ports:
+      - "10200:10200"
+    volumes:
+      - ./data:/data
+      # Allow GPU access:
+      - /dev/dri:/dev/dri
+      - /usr/share/vulkan:/usr/share/vulkan:ro
+    environment:
+      - VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.x86_64.json
