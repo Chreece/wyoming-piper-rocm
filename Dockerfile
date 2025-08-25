@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 
 # Clone Piper (with submodules)
 WORKDIR /opt
-RUN git clone --recursive https://github.com/rhasspy/piper.git /opt/piper
+RUN git clone --recursive https://github.com/rhasspy/piper.git
 
 # Build Piper
 WORKDIR /opt/piper
