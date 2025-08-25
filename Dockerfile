@@ -41,8 +41,8 @@ RUN python3 -m venv venv \
  && venv/bin/pip install .
 
 # Copy Piper binary + shared libraries
-COPY --from=builder /opt/piper/build/piper /usr/local/bin/piper
-COPY --from=builder /opt/piper/build/libpiper_*.so* /usr/local/lib/piper/
+COPY --from=builder /opt/piper/build/bdist.linux-x86_64/piper /usr/local/bin/piper
+COPY --from=builder /opt/piper/build/lib/*.so* /usr/local/lib/piper/
 
 # Make the libraries visible to dynamic linker
 ENV LD_LIBRARY_PATH=/usr/local/lib/piper:$LD_LIBRARY_PATH
