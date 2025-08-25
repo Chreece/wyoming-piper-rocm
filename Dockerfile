@@ -40,6 +40,8 @@ RUN python3 -m venv venv \
 
 # Copy Piper binary (GPU-enabled)
 COPY --from=builder /opt/piper/build/piper /usr/local/bin/piper
+COPY --from=builder /opt/piper/build/libpiper_*.so* /usr/local/lib/piper/
+ENV LD_LIBRARY_PATH=/usr/local/lib/piper:$LD_LIBRARY_PATH
 
 # Expose port
 EXPOSE 10200
