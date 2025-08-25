@@ -31,10 +31,10 @@ WORKDIR /opt
 COPY --from=builder /opt/wyoming-piper /opt/wyoming-piper
 WORKDIR /opt/wyoming-piper
 
-# Setup Python venv + install deps
+# Setup Python venv + install Wyoming-Piper
 RUN python3 -m venv venv \
  && venv/bin/pip install --upgrade pip \
- && venv/bin/pip install -r requirements.txt
+ && venv/bin/pip install .
 
 # Copy Piper binary (GPU-enabled)
 COPY --from=builder /opt/piper/build/piper /usr/local/bin/piper
