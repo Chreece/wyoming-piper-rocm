@@ -11,7 +11,9 @@ WORKDIR /opt
 # Clone and build Piper (C++ TTS engine)
 RUN git clone --recursive https://github.com/rhasspy/piper.git
 WORKDIR /opt/piper
-RUN mkdir build && cd build && cmake .. && make -j$(nproc)
+RUN mkdir -p build && cd build \
+    && cmake .. -DCMAKE_BUILD_TYPE=Release \
+    && make -j$(nproc)
 
 # Clone Wyoming-Piper server (Python wrapper)
 RUN git clone https://github.com/rhasspy/wyoming-piper.git /opt/wyoming-piper
