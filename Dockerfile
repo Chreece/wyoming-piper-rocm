@@ -7,7 +7,7 @@ FROM ubuntu:22.04 AS builder
 RUN apt-get update && apt-get install -y \
     git build-essential cmake python3 python3-venv python3-dev curl \
     libvulkan1 ocl-icd-libopencl1 mesa-vulkan-drivers \
-    libespeak-ng1 piper-phonemize \
+    libespeak-ng1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Clone Piper (with submodules)
@@ -41,6 +41,8 @@ WORKDIR /opt
 COPY --from=builder /opt/wyoming-piper /opt/wyoming-piper
 WORKDIR /opt/wyoming-piper
 
+# Install requirements including piper-phonemize
+RUN venv/bin/pip install -r requirements.txt
 # Create Python venv and install Wyoming-Piper
 RUN python3 -m venv venv \
  && venv/bin/pip install --upgrade pip \
