@@ -38,9 +38,11 @@ RUN python3 -m venv venv \
  && venv/bin/pip install --upgrade pip \
  && venv/bin/pip install .
 
-# Copy Piper binary (GPU-enabled)
+# Copy Piper binary + shared libraries
 COPY --from=builder /opt/piper/build/piper /usr/local/bin/piper
 COPY --from=builder /opt/piper/build/libpiper_*.so* /usr/local/lib/piper/
+
+# Make the libraries visible to dynamic linker
 ENV LD_LIBRARY_PATH=/usr/local/lib/piper:$LD_LIBRARY_PATH
 
 # Expose port
