@@ -23,7 +23,9 @@ FROM ubuntu:22.04
 RUN apt-get update && apt-get install -y \
     python3 python3-venv python3-dev curl \
     libvulkan1 ocl-icd-libopencl1 mesa-vulkan-drivers \
+    libespeak-ng1 \
     && rm -rf /var/lib/apt/lists/*
+
 
 WORKDIR /opt
 
