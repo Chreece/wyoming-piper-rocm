@@ -48,7 +48,7 @@ RUN python3 -m venv venv \
 
 # Copy Piper binary + shared libraries
 COPY --from=builder /opt/piper/build/piper /usr/local/bin/piper
-COPY --from=builder /opt/piper/build/lib/*.so* /usr/local/lib/piper/
+COPY --from=builder /opt/piper/lib/*.so* /usr/local/lib/piper/
 ENV LD_LIBRARY_PATH=/usr/local/lib/piper:$LD_LIBRARY_PATH
 
 # Optional: pre-download default voice
