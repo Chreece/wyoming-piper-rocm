@@ -41,12 +41,12 @@ WORKDIR /opt
 COPY --from=builder /opt/wyoming-piper /opt/wyoming-piper
 WORKDIR /opt/wyoming-piper
 
-# Create Python venv
+# Create Python venv first
 RUN python3 -m venv venv \
  && venv/bin/pip install --upgrade pip
 
-# Install all Wyoming-Piper requirements
-RUN venv/bin/pip install -r requirements.txt
+# Install Wyoming-Piper from local source (pyproject.toml is used automatically)
+RUN venv/bin/pip install .
 
 # Copy Piper binary + shared libraries
 COPY --from=builder /opt/piper/build/piper /usr/local/bin/piper
