@@ -48,10 +48,10 @@ ENV VOICE=en_US-lessac-medium
 EXPOSE 10200
 
 # Default entrypoint (voice configurable with env var)
-ENV VOICE=en_US-lessac-medium
 ENTRYPOINT ["sh", "-c", "venv/bin/python3 -m wyoming_piper \
     --uri tcp://0.0.0.0:10200 \
     --piper /usr/local/bin/piper \
     --voice ${VOICE} \
+    --update-voices \
     --data-dir /data \
     --download-dir /data"]
