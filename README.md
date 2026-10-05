@@ -7,8 +7,6 @@
 
 # Wyoming Piper container setup
 
-💙 **Enjoying this hobby project? [Send a voluntary thank-you via Ko-fi](https://ko-fi.com/chreece).**
-
 Docker build/runtime setup for the upstream [Piper](https://github.com/rhasspy/piper) project and [Wyoming-Piper](https://github.com/rhasspy/wyoming-piper) server.
 
 The upstream Piper and Wyoming-Piper projects remain the work of their respective authors; this repository contains the container setup around them.
